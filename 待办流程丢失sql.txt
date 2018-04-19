@@ -1,0 +1,3 @@
+select * from workflow_currentoperator where requestid=53046 and userid=3;
+
+update workflow_currentoperator set islasttimes=1 where requestid=53046 and userid=3;

@@ -1,0 +1,69 @@
+select ty.typename as '流程类型',ba.workflowname as '流程名',rb.requestname as '流程标题',
+rb.requestid,hr.lastname as '发起人',rb.createdate  as '发起日期',
+case currentnodetype when 0 then '发起' when 1 then '审批' when 2 then '提交' end as '流程状态'
+from workflow_requestbase rb
+left join workflow_base ba
+on rb.workflowid=ba.id
+left join workflow_type ty
+on ba.workflowtype=ty.id
+left join HrmResource hr
+on rb.creater=hr.id
+where rb.currentnodetype in (0,1,2) and workflowid!=1 and typename is not null and rb.createdate>='2016-12-05'
+order by currentnodetype,typename,rb.createdate
+
+select * from workflow_currentoperator order by requestid
+
+select * from workflow_requestbase 
+
+select * from hrmresource where id='4258'
+
+select * from workflow_requestbase
+
+select * from workflow_base 
+
+select a.requestid,c.workflowname,f.lastname,a.requestname,a.currentnodetype,d.nodename,e.lastname,e.email from workflow_requestbase a
+left join workflow_currentoperator b on a.requestid = b.requestid
+left join workflow_base c on a.workflowid = c.id
+left join workflow_nodebase d on b.nodeid = d.id
+left join HrmResource e on b.userid = e.id
+left join HrmResource f on a.creater = f.id
+where a.currentnodetype in (1,2) and c.isvalid = '1' and c.id not in (1) and workflowname not like '%（停用）%' and isremark<>2 
+order by a.requestid
+
+-----流程未操作者统计--------
+select f.requestid,right(f.ccop,len(f.ccop)-1) as 'wczz'from
+(
+select t.requestid,
+(
+select ','+t2.currentoperator from 
+(select a.requestid,c.workflowname,f.lastname as 'creator',a.requestname,a.currentnodetype,d.nodename,
+e.lastname as 'currentoperator',
+e.email from workflow_requestbase a
+left join workflow_currentoperator b on a.requestid = b.requestid
+left join workflow_base c on a.workflowid = c.id
+left join workflow_nodebase d on b.nodeid = d.id
+left join HrmResource e on b.userid = e.id
+left join HrmResource f on a.creater = f.id
+where a.currentnodetype in (1,2) and c.isvalid = '1' and c.id not in (1) and workflowname not like '%（停用）%' and isremark<>2 
+) t2
+where t2.requestid=t.requestid
+for xml path('') 
+) as ccop
+from
+( 
+select a.requestid,c.workflowname,f.lastname as 'creator',a.requestname,a.currentnodetype,d.nodename,
+e.lastname as 'currentoperator',
+e.email from workflow_requestbase a
+left join workflow_currentoperator b on a.requestid = b.requestid
+left join workflow_base c on a.workflowid = c.id
+left join workflow_nodebase d on b.nodeid = d.id
+left join HrmResource e on b.userid = e.id
+left join HrmResource f on a.creater = f.id
+where a.currentnodetype in (1,2) and c.isvalid = '1' and c.id not in (1) and workflowname not like '%（停用）%' and isremark<>2 
+) t
+group by t.requestid
+) f
+
+
+
+SELECT STUFF((SELECT ','+ cast(cwkj as varchar) FROM formtable_main_206_dt1 FOR XML PATH('')),1,1,'') 

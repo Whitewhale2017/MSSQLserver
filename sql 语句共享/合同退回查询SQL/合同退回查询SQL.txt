@@ -1,0 +1,28 @@
+select * from workflow_requestbase where workflowid = 339
+select* from workflow_requestLog where workflowid = 339 and logtype = '3'
+select * from workflow_nodebase where id = 3372
+select * from workflow_base where id in (339,341,342,350,352,353,354,355) order by id
+
+select a.requestid,b.requestname,a.reNum from (
+select requestid,count(1) as reNum
+from workflow_requestLog 
+where 
+	workflowid = 355 and logtype = '3' 
+	and requestid in(select requestid from workflow_requestbase where  createdate >= '2015-08-01' and createdate <= '2016-04-30')
+group by requestid
+)a left join workflow_requestbase b on a.requestid = b.requestid 
+
+
+select a.nodeid,b.nodename,a.nodeNum from (select 
+	nodeid,count(1) as nodeNum
+from 
+	workflow_requestLog c
+where 
+	c.workflowid = 355 
+	and c.logtype = '3'
+	and requestid in(select requestid from workflow_requestbase where  createdate >= '2015-08-01' and createdate <= '2016-04-30')
+group by nodeid 
+) a left join workflow_nodebase b on a.nodeid = b.id
+
+
+

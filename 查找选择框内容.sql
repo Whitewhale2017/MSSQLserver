@@ -1,0 +1,1 @@
+select * from workflow_selectitem where selectname like '%æ≠¿Ì%'

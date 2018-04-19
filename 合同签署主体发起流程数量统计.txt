@@ -1,0 +1,25 @@
+select s.htqszt,
+t.htqszt,count(1) from
+(select requestId,htmc,htbh,htqszt,tbrq from formtable_main_2
+union all
+select requestId,htmc,htbh,htqszt,tbrq from formtable_main_5
+union all
+select requestId,htmc,htbh,htqszt,tbrq from formtable_main_17
+union all
+select requestId,htmc,htbh,htqszt,tbrq from formtable_main_18
+union all
+select requestId,htmc,htbh,htqszt,tbrq from formtable_main_19
+union all
+select requestId,htmc,htbh,htqszt,tbrq from formtable_main_20
+union all
+select requestId,htmc,htbh,htqszt,tbrq from formtable_main_21
+union all
+select requestId,htmc,htbh,htqszt,tbrq from formtable_main_22 
+union all
+select requestId,htmc,htbh,htqszt,tbrq from formtable_main_144 
+union all
+select requestId,htmc,htbh,htqszt,tbrq from formtable_main_175) t
+left join uf_formtable_htqszt s
+on t.htqszt=s.id
+where t.tbrq>='2017-03-24' and t.tbrq<='2017-04-23'
+group by t.htqszt,s.htqszt

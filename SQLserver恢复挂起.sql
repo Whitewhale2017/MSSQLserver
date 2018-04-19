@@ -1,0 +1,18 @@
+USE master
+GO
+restore database ecology8 with recovery
+
+dbcc checkdb(ecology8)
+
+USE master
+GO
+ALTER DATABASE test SET SINGLE_USER
+GO
+ALTER DATABASE test SET EMERGENCY
+GO
+DBCC CHECKDB(test,REPAIR_ALLOW_DATA_LOSS)
+go
+ALTER DATABASE test SET ONLINE
+GO
+ALTER DATABASE test SET MULTI_USER
+GO

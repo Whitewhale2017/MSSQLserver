@@ -1,0 +1,12 @@
+select * from workflow_base where id in(401,387,403,207,402,394,359,416,182,417,193,191,298,336,391,392,189,397,346,386,301,302,303) order by workflowname
+
+select a.requestid,requestname,b.num from workflow_requestbase a
+left join(select requestid,count(1) as num from workflow_requestLog where logtype = '3' and workflowid = 303  group by requestid) b
+on a.requestid = b.requestid
+where workflowid = 303 and createdate >= '2016-01-01' and createdate <= '2016-06-30' and b.num is not null
+
+
+select a.nodename,b.num from workflow_nodebase a right join(
+select nodeid,count(1) as num from workflow_requestLog where  workflowid = 303 and logtype = '3' 
+and requestid in(select requestid from workflow_requestbase where workflowid = 303 and createdate >= '2016-01-01' and createdate <= '2016-06-30') 
+group by nodeid ) b on a.id = b.nodeid

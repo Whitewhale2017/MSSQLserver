@@ -1,0 +1,20 @@
+
+create table OareportRole( 
+	roleId int identity(1,1) primary key not null,--角色id
+	name varchar(100) not null,--角色名称
+	[status] char(1) not null,--状态
+	createTime datetime not null, --添加时间
+	updateTime datetime not null --操作时间
+)
+
+create table OareportRoleMenu(
+	roleId int not null,--角色id
+	menuId int not null --菜单id
+	primary key(roleId,menuId)
+)
+
+create table OareportUserRole(  
+	userId int not null,--用户id
+	roleId int not null --角色id
+	primary key(userId,roleId)
+)

@@ -1,0 +1,3 @@
+删除节点，表单无法查看：
+select * from workflow_flownode where workflowid=问题流程id and nodetype='3'
+update  workflow_requestbase set currentnodeid=新节点id where workflowid=问题流程id and currentnodetype='3' and currentnodeid=老节点id

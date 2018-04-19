@@ -1,0 +1,75 @@
+
+		--各事业部流程总发起数量
+		select a.*,b.subcompanyname from(
+			select 
+				b.subcompanyid1 as subId,count(1) as num
+			from 
+				workflow_requestbase a
+				left join HrmResource b	  on a.creater = b.id
+			where  
+				CONVERT(varchar(7), a.createdate, 120 ) = '2016-05'
+			group by b.subcompanyid1
+		) a left join HrmSubCompany b on a.subId = b.id
+		
+		--各事业部流程总发起并当月办结的数量
+		select a.*,b.subcompanyname from(
+			select 
+				b.subcompanyid1 as subId,count(1) as num
+			from 
+				workflow_requestbase a
+				left join HrmResource b	on a.creater = b.id
+			where  
+				CONVERT(varchar(7), a.createdate, 120 ) = '2016-05'
+				and currentnodetype = 3
+				and CONVERT(varchar(7), a.lastoperatedate, 120 ) = '2016-05'
+			group by b.subcompanyid1
+		) a left join HrmSubCompany b on a.subId = b.id
+		
+		
+		--退回
+		select a.*,b.subcompanyname from(
+			select c.subcompanyid1 as subId,count(1) as num from (
+				select requestid from workflow_requestLog where logtype = '3' group by requestid
+			) a left join workflow_requestbase b on a.requestid = b.requestid
+				left join HrmResource c	on b.creater = c.id
+			where  
+				CONVERT(varchar(7), b.createdate, 120 ) = '2016-05'
+			group by c.subcompanyid1
+		) a left join HrmSubCompany b on a.subId = b.id
+		
+		
+		--各事业部流程发起
+		select a.subId,a.workflowId,a.num,b.subcompanyname from(
+			select 
+				b.subcompanyid1 as subId,c.id as workflowId, count(1) as num
+			from 
+				workflow_requestbase a
+				left join HrmResource b	  on a.creater = b.id
+				left join workflow_base c on a.workflowid = c.id
+			where  
+				CONVERT(varchar(7), a.createdate, 120 ) = '2016-05'
+				and b.subcompanyid1 is not null
+			group by b.subcompanyid1,c.id
+		) a 
+		left join HrmSubCompany b on a.subId = b.id
+		
+		select 
+			b.subName,c.typename,a.workflowname,b.num
+		from workflow_base a
+		right join (
+			select a.subId as subId,a.workflowId as workflowId,a.num as num,b.subcompanyname as subName from(
+				select 
+					b.subcompanyid1 as subId,c.id as workflowId, count(1) as num
+				from 
+					workflow_requestbase a
+					left join HrmResource b	  on a.creater = b.id
+					left join workflow_base c on a.workflowid = c.id
+				where  
+					CONVERT(varchar(7), a.createdate, 120 ) = '2016-04'
+					and b.subcompanyid1 is not null
+				group by b.subcompanyid1,c.id
+			) a 
+			left join HrmSubCompany b on a.subId = b.id
+		) b on a.id = b.workflowId
+		left join workflow_type c on a.workflowtype = c.id
+		order by b.subName,c.typename,a.workflowname

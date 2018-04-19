@@ -1,0 +1,23 @@
+DENY VIEW any DATABASE TO PUBLIC  --删除所有默认用户（除去sa）的数据库可视权限
+
+GRANT VIEW any DATABASE TO PUBLIC   --赋予所有默认用户的数据库可视权限
+
+DENY VIEW any DATABASE TO ehr
+
+GRANT VIEW any DATABASE TO ehr
+
+--备注:创建用户时,用户映射先不授权到test数据库
+
+--删除架构或者将架构赋值给其他角色
+
+ALTER AUTHORIZATION ON DATABASE::workflow_ytx TO ehr
+ALTER AUTHORIZATION ON DATABASE::YTX TO ehr
+ALTER AUTHORIZATION ON DATABASE::YTX_ATS TO ehr
+
+
+ALTER AUTHORIZATION ON DATABASE::workflow_ytx TO sa
+ALTER AUTHORIZATION ON DATABASE::YTX TO sa
+ALTER AUTHORIZATION ON DATABASE::YTX_ATS TO sa
+
+select * from HrmResource 
+
