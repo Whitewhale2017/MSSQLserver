@@ -1,4 +1,19 @@
 
+--------------------------
+isremark
+0：未操作
+1：转发
+2：已操作
+4：归档
+5：超时
+8：抄送(不需提交)
+9：抄送(需提交)
+a: 意见征询
+b: 回复
+h: 转办
+j: 转办提交
+f: 系统自动提交
+--------------------------
 create view v_glc_lcdb 
 as
 select a.userid,a.姓名,a.安全级别,a.手机号,a.邮箱,
@@ -12,7 +27,7 @@ from (
 	select a.requestid,a.userid from workflow_currentoperator a
 	left join workflow_base b on a.workflowid = b.id
 	left join workflow_requestbase c on a.requestid = c.requestid
-	where isvalid = '1'  and b.id not in (1) and isremark in (0,1,8,9) --and c.createdate<='2017-08-17' and a.userid in  ('146') --('7020','1780','2662','6106')
+	where isvalid = '1'  and b.id not in (1) and isremark in ('0','1','8','9') --and c.createdate<='2017-08-17' and a.userid in  ('146') --('7020','1780','2662','6106')
 	group by a.requestid,a.userid 
 ) a 
 left join HrmResource b on a.userid = b.id
@@ -31,7 +46,7 @@ from workflow_currentoperator a
 left join workflow_base b on a.workflowid = b.id
 left join HrmResource c on a.userid = c.id
 left join workflow_type d on b.workflowtype = d.id
-where isvalid = '1' and b.id not in (1) and isremark in (0,1,8,9) --and a.receivedate<='2017-08-08' and a.userid in  (select userid from v_lcdbtop50) --('7020','1780','2662','6106')
+where isvalid = '1' and b.id not in (1) and isremark in ('0','1','8','9') --and a.receivedate<='2017-08-08' and a.userid in  (select userid from v_lcdbtop50) --('7020','1780','2662','6106')
 group by a.requestid,a.userid,a.isremark,receivedate,c.lastname,c.seclevel,b.workflowname,d.typename,receivetime
 ) a
 group by requestid,userid) t
@@ -47,7 +62,7 @@ from (
 	select a.requestid,a.userid,a.isremark from workflow_currentoperator a
 	left join workflow_base b on a.workflowid = b.id
 	left join workflow_requestbase c on a.requestid = c.requestid
-	where isvalid = '1' and b.id not in (1) and isremark in (0,1,8,9) 
+	where isvalid = '1' and b.id not in (1) and isremark in ('0','1','8','9') 
 	group by a.requestid,a.userid,a.isremark
 ) a  left join HrmResource b on a.userid = b.id
 group by userid,lastname) t

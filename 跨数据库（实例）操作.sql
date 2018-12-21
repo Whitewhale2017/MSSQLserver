@@ -25,10 +25,10 @@ SELECT * FROM OPENDATASOURCE('SQLOLEDB','Data Source=192.168.19.203;User ID=sa;P
 ----创建链接服务器----
 --在跨库查询时需要启用Ad Hoc Distributed Queries---默认已开，不用执行以下语句
 --启用Ad Hoc Distributed Queries：
---exec sp_configure 'show advanced options',1
---reconfigure
---exec sp_configure 'Ad Hoc Distributed Queries',1
---reconfigure
+exec sp_configure 'show advanced options',1
+reconfigure
+exec sp_configure 'Ad Hoc Distributed Queries',1
+reconfigure
 --使用完成后，关闭Ad Hoc Distributed Queries：
 --exec sp_configure 'Ad Hoc Distributed Queries',0
 --reconfigure

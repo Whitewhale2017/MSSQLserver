@@ -5,7 +5,7 @@ select (select workflowname from workflow_base where id=workflowid)as workflowna
 (select subcompanyname from HrmSubCompany where id=(select subcompanyid1 from hrmresource where id=creater))  as companyname,
 createdate,lastoperatedate,workflowid,requestid,creater,currentnodetype
 from workflow_requestbase w
-where w.createdate>='2016-07-01' and w.createdate<'2016-08-01' 
+where w.createdate>='2018-11-01' and w.createdate<='2018-11-30' 
 --and creater=1
 --order by w.createdate 
 
@@ -17,10 +17,8 @@ select * from workflow_type
 ----根据流程类型、发起人所属公司按月统计发起流程数量
 select
 (select typename from workflow_type where id=workflowtype)as workflowtype,
---(select workflowname from workflow_base where id=workflowid)as workflowname,
---t.companyid,
 (select subcompanyname from HrmSubCompany where id=t.companyid) as companyname,
-count(requestid) as num--,createdate
+count(requestid) as num
 from
 (
 select 
@@ -28,7 +26,7 @@ select
 workflowid,(select id from HrmSubCompany where id=(select subcompanyid1 from hrmresource where id=creater))  as companyid,
 createdate,lastoperatedate,requestid,creater
 from workflow_requestbase w
-where w.createdate>='2016-12-01' and w.createdate<='2016-12-31'
+where w.createdate>='2018-11-01' and w.createdate<='2018-11-30'
 ) t
 group by workflowtype,companyid--,createdate
 
@@ -44,7 +42,7 @@ select (select workflowtype from workflow_base where id=workflowid) as workflowt
 workflowid,(select id from HrmSubCompany where id=(select subcompanyid1 from hrmresource where id=creater))  as companyid,
 createdate,lastoperatedate,requestid,creater
 from workflow_requestbase w
-where w.createdate>='2016-07-01' and w.createdate<'2016-08-01'
+where w.createdate>='2018-11-01' and w.createdate<='2018-11-30'
 ) t
 group by workflowid,companyid
 
@@ -100,8 +98,8 @@ select t.companyid,
                   from workflow_requestLog
                  where requestid = w.requestid) as thcs
           from workflow_requestbase w
-         where w.createdate >= '2016-01-01'
-           and w.createdate < '2016-11-30') t
+         where w.createdate >= '2018-11-01'
+           and w.createdate < '2018-11-30') t
  group by companyid, workflowid
 
 
