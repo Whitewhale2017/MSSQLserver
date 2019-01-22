@@ -17,6 +17,4 @@ and d.subcompanyid1=101
 )e
 group by e.lastname
 order by count(lastname) desc)
-where rownum<=10
 
-select GETDATE()

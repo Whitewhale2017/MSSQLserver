@@ -31,5 +31,16 @@ EXEC sp_addlinkedsrvlogin
 @rmtpassword = '11sanzsapK%'
 
 select top 1000 * from HANAPRD.."SAPABAP1"."LQUA"  
+------将SQL提交到远程服务器执行 方法1----------------
+select * from openquery([HANAPRD],'select * from SAPABAP1.BKPF where bldat<=20181231')
+------将SQL提交到远程服务器执行 方法2----------------
+DECLARE @sql nvarchar(max)
+SELECT @sql ='
+DELETE 
+FROM [AdventureWorks2008].[Sales].[SalesOrderDetail]
+WHERE SalesOrderDetailID=5
+    AND EXISTS(SELECT TOP 1 1 FROM [AdventureWorks2008].[Sales].[SalesOrderDetail])
+'
+exec [LINKSERVERNAME].[AdventureWorks2008].dbo.sp_executesql @sql
 
    
