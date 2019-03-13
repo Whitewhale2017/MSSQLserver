@@ -11,12 +11,3 @@ JOIN sys.dm_exec_connections AS conn
 select session_id,start_time,status,command,wait_type,(wait_time/60000) as waitmin,transaction_id 
 from sys.dm_exec_requests where session_id=63
 
-select
-RCLNT,
-RLDNR,
-RBUKRS,
-GJAHR,
-BELNR,
-DOCLN,
-RYEAR
-from HANAQAS.."SAPABAP1"."ACDOCA"
