@@ -1,5 +1,5 @@
 truncate table material_history_item_log
-insert into material_history_item_log select * from openquery([RF],'select * from v_material_history_item_log')
+insert into material_history_item_log select * from openquery([RF],'select * from v_material_history_item_log where createDate<=''2019-03-14 08:00''')
 
 select werks,lgort,lgpla,matnr,maktx,lgtyp
 ,charg,sonum_ex,bestq,gesme,createDate from [dbo].[material_history_item_log] 
@@ -7,7 +7,7 @@ group by werks,lgort,lgpla,matnr,maktx,lgtyp
 ,charg,sonum_ex,bestq,gesme,createDate
 having count(*)>1
 
-select * from [material_history_item_log] where matnr='1100101302' and createDate='2019-03-07 19:29:39.0000000'
+select gesme,quantity,verme from [material_history_item_log] where matnr='1100101302' and createDate='2019-03-07 19:29:39.0000000'
 
 select * from [dbo].[stomtr]
 ------------------------------------------------------------------------------------------------
@@ -33,12 +33,12 @@ from
 (
 -----------------------------明细------------------------------------------
 select A.werks as '工厂',A.lgort as '库存地点',A.lgpla as '仓位',A.matnr as '物料号',A.maktx as '物料描述',A.类  as '仓储类型'
-,A.charg as '批次',A.sonum_ex as '特殊库存编码',A.bestq as '库存类型',A.gesme as '库存数量',B.quantity as '盘点数量',B.盘点时间
+,A.charg as '批次',A.sonum_ex as '特殊库存编码',A.bestq as '库存类型',B.verme as '库存数量',B.quantity as '盘点数量',B.盘点时间
 from [dbo].[stomtr] A
 left join (
 
 select left(createDate,19) as '盘点时间',werks,lgort,lgpla,matnr,maktx,lgtyp
-,charg,sonum_ex,bestq,gesme,quantity
+,charg,sonum_ex,bestq,verme,quantity
 from (
 select * from  material_history_item_log A
 where createDate=(select max(createDate) from material_history_item_log B where A.werks=B.werks and A.lgort=B.lgort 
