@@ -1,6 +1,9 @@
 truncate table material_history_item_log
 insert into material_history_item_log select * from openquery([RF],'select * from v_material_history_item_log where createDate<=''2019-03-14 08:00''')
 
+select * into material_history_item_log from openquery([RF],'select * from v_material_history_item_log where createDate<=''2019-03-15 08:00''')
+
+
 select werks,lgort,lgpla,matnr,maktx,lgtyp
 ,charg,sonum_ex,bestq,gesme,createDate from [dbo].[material_history_item_log] 
 group by werks,lgort,lgpla,matnr,maktx,lgtyp

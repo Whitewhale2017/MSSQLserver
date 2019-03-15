@@ -68,3 +68,16 @@ select gsdm,kcwl,gzrq,drjz,drcz
 ,(select sum(case when drcz<0 then drcz else 0 end) from ZDY_T_MATRINFO_GZJL_T1 B where A.gsdm=B.gsdm and A.kcwl=B.kcwl) as cz
 from ZDY_T_MATRINFO_GZJL_T1 A
 ) T
+----新建索引优化计算效率---------
+CREATE NONCLUSTERED INDEX [_dta_index_ZDY_T_MATRINFO_GZJL_T1_6_1653580929__K1_K2_3_4_5] 
+ON [dbo].[ZDY_T_MATRINFO_GZJL_T1]
+(
+	[gsdm] ASC,
+	[kcwl] ASC
+)
+INCLUDE ( 	[gzrq],
+	[drjz],
+	[drcz]) WITH (SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF) ON [PRIMARY]
+
+
+drop index [dbo].[ZDY_T_MATRINFO_GZJL_T1].[_dta_index_ZDY_T_MATRINFO_GZJL_T1_6_1653580929__K1_K2_3_4_5]
