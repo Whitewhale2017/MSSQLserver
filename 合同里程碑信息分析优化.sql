@@ -1,4 +1,5 @@
-SELECT DISTINCT 
+use ecology;
+SELECT DISTINCT
                 a.vbeln,a.posid,bm, lastname, ddlx, ddzt, xmlx, lcbb
 				, CASE isnull(a.sfyt, '1') 
                 WHEN 0 THEN 'ԤͶ' WHEN 1 THEN '��ʽ' END AS sfyt, 
