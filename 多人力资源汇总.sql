@@ -32,3 +32,7 @@ SELECT ',' +workcode FROM HrmResource FOR XML PATH('')
 SELECT workcode FROM HrmResource FOR XML PATH('')
 
 SELECT STUFF((SELECT ','+ workcode FROM dbo.HrmResource FOR XML PATH('')),1,1,'') 
+
+select id,lastname from hrmresource where id in (select ('9,3,46'))
+
+select ('9,3,46')

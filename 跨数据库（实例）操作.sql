@@ -57,5 +57,5 @@ exec sp_dropserver 'srv_lnk','droplogins'
 
 
 
-select * from Hrmdepartment
+select * from openquery£¨srv_lnk,'select * from hrmresource'£©
 
