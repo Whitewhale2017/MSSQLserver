@@ -2,12 +2,13 @@
 
 USE [master];
 GO
-ALTER DATABASE [DatabaseName]
+ALTER DATABASE ecology
 SET OFFLINE WITH ROLLBACK IMMEDIATE
 --3，修改数据库状态为正常状态
 
-USE master GO
-RESTORE DATABASE [DatabaseName] WITH RECOVERY;
+USE master 
+GO
+RESTORE DATABASE ecology WITH RECOVERY;
 --2，连接数据库
 
 ALTER DATABASE [DatabaseName]

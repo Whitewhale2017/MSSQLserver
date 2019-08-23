@@ -2,7 +2,7 @@ sp_who
 
 sp_who2 --查询进程
 
-kill 105 --杀死进程
+kill 63 --杀死进程
 
 use master  --取得独占访问权限
 ALTER DATABASE ecology SET OFFLINE WITH ROLLBACK IMMEDIATE
