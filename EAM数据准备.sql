@@ -150,10 +150,15 @@ alter table uf_fixedassets disable trigger tri_eam_fixedassets
 -------------------插入财务固定资产数据--------------------
  select * from openquery([EAM],'select id,zzbh,sapzzbh,sbmc,sbxh,ysrq,cfwz,ssqy,zclbyj from uf_fixedassets') ;
 
-insert into  openquery([EAM],'select id,zzbh,sapzzbh,sbmc,sbxh,ysrq,cfwz,ssqy,zclbyj from uf_fixedassets ')  
-select  uf.id,zzbh,sapzzbh,sbmc,sbxh,ysrq,cfwz,gd.qy,ws.selectname as zclbyj from uf_fixedassets uf
+insert into  openquery([EAM],'select id,zzbh,sapzzbh,sbmc,sbxh,ysrq,cfwz,ssqy,zclbyj,syr,sybm,bz from uf_fixedassets ')  
+select  uf.id,zzbh,sapzzbh,sbmc,sbxh,ysrq,cfwz,gd.qy,ws.selectname as zclbyj
+,b.lastname as syr,c.bmfl as sybm,cast(uf.bz as varchar(2000)) as bz
+from uf_fixedassets uf
  left join workflow_SelectItem ws on ws.selectvalue =uf.zclbyj and ws.fieldid=27094
  left join uf_gdzcssqy gd on gd.id=uf.ssqy
+  left join hrmresource b on uf.syr=b.id
+   left join uf_bmbh c on uf.sybm=c.bmbh
+   where uf.id not in (select id from  openquery([EAM],'select id from uf_fixedassets '))
 
  -----------------插入中心固定资产数据-------------------
  select * from openquery([EAM],'select id,zzbh,sbmc,sbxh,ysrq,cfwz,ssqy,zclbyj,syr,sybm,bz from uf_centralassets ') ;
@@ -166,47 +171,68 @@ from uf_zxgdzc uf
  left join uf_gdzcssqy gd on gd.id=uf.ssqy
    left join hrmresource b on uf.syr=b.id
    left join uf_bmbh c on uf.sybm=c.bmbh
+   where uf.id not in (select id from  openquery([EAM],'select id from uf_centralassets '))
 
 
 ------------------------------------------------
-alter proc prc_insert_update_eam (@id int)
+select * from uf_fixedassets where zzbh='SIE190332'
+
+exec prc_insert_update_eam 5956
+------------------------------------------------
+
+ALTER proc [dbo].[prc_insert_update_eam] (@id int)
 as
 begin
+      declare @zzbh varchar(20),@sapzzbh varchar(50),@sbmc varchar(50),@sbxh varchar(2000)
+      declare @ysrq varchar(50),@cfwz varchar(50),@ssqy varchar(50),@zclbyj varchar(50)
+      declare @syr varchar(50),@sybm varchar(50),@bz varchar(2000)
+      select  @zzbh=zzbh,@sapzzbh=sapzzbh,@sbmc=sbmc,@sbxh=cast(sbxh as varchar(2000))
+      ,@ysrq=ysrq,@cfwz=cfwz,@ssqy=gd.qy,@zclbyj=ws.selectname,@syr=b.lastname,@sybm=c.bmfl,@bz=cast(uf.bz as varchar(2000))
+	   from uf_fixedassets uf
+       left join workflow_SelectItem ws on ws.selectvalue =uf.zclbyj and ws.fieldid=27094
+       left join uf_gdzcssqy gd on gd.id=uf.ssqy 
+       left join hrmresource b on uf.syr=b.id
+       left join uf_bmbh c on uf.sybm=c.bmbh
+	   where uf.id=@id
    if exists(select id from openquery([EAM],'select id from uf_fixedassets ') where id=@id)
-   begin
-   declare @zzbh varchar(20),@sapzzbh varchar(50),@sbmc varchar(50),@sbxh varchar(2000)
-   declare @ysrq varchar(50),@cfwz varchar(50),@ssqy varchar(50),@zclbyj varchar(50)
-
-   select  @zzbh=zzbh,@sapzzbh=sapzzbh,@sbmc=sbmc,@sbxh=cast(sbxh as varchar(2000))
-    ,@ysrq=ysrq,@cfwz=cfwz,@ssqy=gd.qy,@zclbyj=ws.selectname from uf_fixedassets uf
-    left join workflow_SelectItem ws on ws.selectvalue =uf.zclbyj and ws.fieldid=27094
-    left join uf_gdzcssqy gd on gd.id=uf.ssqy where uf.id=@id
-
-   update openquery([EAM],'select id,zzbh,sapzzbh,sbmc,sbxh,ysrq,cfwz,ssqy,zclbyj from uf_fixedassets ')  
-   set zzbh=@zzbh,sapzzbh=@sapzzbh,sbmc=@sbmc,sbxh=@sbxh,ysrq=@ysrq,cfwz=@cfwz,ssqy=@ssqy,zclbyj=@zclbyj where id=@id
-   end 
+      begin
+      update openquery([EAM],'select id,zzbh,sapzzbh,sbmc,sbxh,ysrq,cfwz,ssqy,zclbyj,syr,sybm,bz from uf_fixedassets ')  
+      set zzbh=@zzbh,sapzzbh=@sapzzbh,sbmc=@sbmc,sbxh=@sbxh,ysrq=@ysrq,cfwz=@cfwz,ssqy=@ssqy,zclbyj=@zclbyj,syr=@syr,sybm=@sybm,bz=@bz where id=@id
+      end 
    else 
-   begin
-   insert into  openquery([EAM],'select id,zzbh,sapzzbh,sbmc,sbxh,ysrq,cfwz,ssqy,zclbyj from uf_fixedassets ')  select  uf.id,zzbh,sapzzbh,sbmc,sbxh,ysrq,cfwz,gd.qy,ws.selectname as zclbyj from uf_fixedassets uf
-   left join workflow_SelectItem ws on ws.selectvalue =uf.zclbyj and ws.fieldid=27094
-   left join uf_gdzcssqy gd on gd.id=uf.ssqy where uf.id=@id
+      begin
+      insert into  openquery([EAM],'select id,zzbh,sapzzbh,sbmc,sbxh,ysrq,cfwz,ssqy,zclbyj,syr,sybm,bz from uf_fixedassets ')  
+      values(@id,@zzbh,@sapzzbh,@sbmc,@sbxh,@ysrq,@cfwz,@ssqy,@zclbyj,@syr,@sybm,@bz)
    end
 end;
 
-exec prc_insert_update_eam 4841
----------------------------------------------------------
-
--------------------------批量插入数据更新进入EAM MYSQL数据库-----------------------
-create proc prc_insert_eam (@id int)
+ALTER proc [dbo].[prc_insert_update_eam_zx](@id int)
 as
 begin
-   if not exists(select id from openquery([EAM],'select id from uf_fixedassets ') where id=@id)
-   begin
-   insert into  openquery([EAM],'select id,zzbh,sapzzbh,sbmc,sbxh,ysrq,cfwz,ssqy,zclbyj from uf_fixedassets ')  select  uf.id,zzbh,sapzzbh,sbmc,sbxh,ysrq,cfwz,gd.qy,ws.selectname as zclbyj from uf_fixedassets uf
-   left join workflow_SelectItem ws on ws.selectvalue =uf.zclbyj and ws.fieldid=27094
-   left join uf_gdzcssqy gd on gd.id=uf.ssqy where uf.id=@id
+   declare @zzbh varchar(20),@sbmc varchar(50),@sbxh varchar(2000)
+   declare @ysrq varchar(50),@cfwz varchar(50),@ssqy varchar(50),@zclbyj varchar(50)
+   declare @syr varchar(50),@sybm varchar(50),@bz varchar(2000)
+   select  @zzbh=zzbh,@sbmc=sbmc,@sbxh=cast(sbxh as varchar(2000))
+    ,@ysrq=ysrq,@cfwz=cfwz,@ssqy=gd.qy,@zclbyj=ws.selectname,@syr=b.lastname,@sybm=c.bmfl,@bz=cast(uf.bz as varchar(2000)) 
+	from uf_zxgdzc uf
+    left join workflow_SelectItem ws on ws.selectvalue =uf.zclbyj and ws.fieldid=27219
+    left join uf_gdzcssqy gd on gd.id=uf.ssqy 
+	left join hrmresource b on uf.syr=b.id
+    left join uf_bmbh c on uf.sybm=c.bmbh
+	where uf.id=@id
+   if exists(select id from openquery([EAM],'select id from uf_centralassets ') where id=@id)
+     begin
+     update openquery([EAM],'select id,zzbh,sapzzbh,sbmc,sbxh,ysrq,cfwz,ssqy,zclbyj,syr,sybm,bz from uf_centralassets ')  
+     set zzbh=@zzbh,sbmc=@sbmc,sbxh=@sbxh,ysrq=@ysrq,cfwz=@cfwz,ssqy=@ssqy,zclbyj=@zclbyj,syr=@syr,sybm=@sybm,bz=@bz 
+     where id=@id
+     end 
+   else 
+     begin
+     insert into  openquery([EAM],'select id,zzbh,sbmc,sbxh,ysrq,cfwz,ssqy,zclbyj,syr,sybm,bz from uf_centralassets ')  
+     values(@id,@zzbh,@sbmc,@sbxh,@ysrq,@cfwz,@ssqy,@zclbyj,@syr,@sybm,@bz)
    end
 end;
+---------------------------------------------------------
 
 declare cur_temp cursor local scroll
 for (select id from uf_fixedassets)
@@ -221,39 +247,6 @@ while @@FETCH_STATUS=0
 close cur_temp
 deallocate cur_temp
 
------------------
-insert into openquery([EAM],'select id,zzbh,sapzzbh,sbmc,sbxh,ysrq,cfwz,ssqy,zclbyj
-,syr,sybm,bz
-from uf_fixedassets ')  
-    select  uf.id,zzbh,sapzzbh,sbmc,sbxh,ysrq,cfwz,gd.qy,ws.selectname as zclbyj
-	,b.lastname as syr,c.bmfl as sybm,cast(uf.bz as varchar(2000)) as bz
-	 from uf_fixedassets uf
-   left join workflow_SelectItem ws on ws.selectvalue =uf.zclbyj and ws.fieldid=27094
-   left join uf_gdzcssqy gd on gd.id=uf.ssqy 
-   left join hrmresource b on uf.syr=b.id
-   left join uf_bmbh c on uf.sybm=c.bmbh
-   where uf.id not in (select * from openquery([EAM],'select id from uf_fixedassets '))
-
-select * from openquery([EAM],'select id,zzbh,sapzzbh,sbmc,sbxh,ysrq,cfwz,ssqy,zclbyj
-,syr,sybm,bz
-from uf_centralassets ')  
-
-
-
-
---------------------
-select zzbh,a.syr,a.sybm,a.bz,b.lastname,c.bmfl from uf_fixedassets a
-left join hrmresource b
-on a.syr=b.id
-left join uf_bmbh c
-on a.sybm=c.bmbh
-
-
-select * from openquery([EAM],'select count(id) from uf_fixedassets ')
-
-select a.id,a.zzbh,b.id from uf_fixedassets a
-left join  openquery([EAM],'select id,zzbh from uf_fixedassets ') b
-on a.id=b.id
 
 --------------------用户名表-------------------------------------------------------------
 select loginid,lastname,password from hrmresource 
@@ -261,6 +254,38 @@ select loginid,lastname,password from hrmresource
 select * from openquery([EAM],'SELECT * FROM fixedassets.admin')
 
 
-select * from 
+select a.*,b.status from 
 openquery([EAM],'select id,isaccountenabled,isaccountexpired,isaccountlocked,iscredentialsexpired,userid,name,username,password 
-from fixedassets.admin ')
+from fixedassets.admin ') a
+inner join hrmresource b
+on a.username=b.loginid
+where b.status=5
+
+select * from hrmresource where loginid='uid14180'
+
+begin
+   update openquery([EAM],'select id,isaccountenabled,isaccountexpired,isaccountlocked,iscredentialsexpired,userid,name,username,password 
+   from fixedassets.admin ') set password='' where username<>'admin' ---清空admin账号之外的账号密码
+
+   update openquery([EAM],'select id,isaccountenabled,isaccountexpired,isaccountlocked,iscredentialsexpired,userid,name,username,password 
+   from fixedassets.admin ') set isaccountenabled=0  
+   from ecology.dbo.hrmresource a
+   where username=a.loginid and a.status=5  ---锁定离职账号
+    
+  update openquery([EAM],'select id,isaccountenabled,isaccountexpired,isaccountlocked,iscredentialsexpired,userid,name,username,password 
+  from fixedassets.admin ') set password=lower(isnull(a.password,''))
+  from ecology.dbo.hrmresource a
+  where username=a.loginid and a.status<>5 --更新在职人员账号密码
+
+  insert into openquery([EAM],'select id,isaccountenabled,isaccountexpired,isaccountlocked,iscredentialsexpired,userid,name,username,password,loginFailureCount 
+  from fixedassets.admin ') 
+  select a.id as id,1 as isaccountenabled,0 as isaccountexpired,0 as isaccountlocked,0 as iscredentialsexpired
+  ,a.id as userid,a.lastname as name,a.loginid as username,lower(isnull(a.password,'')) as password,0 as loginFailureCount
+  from ecology.dbo.hrmresource a
+  left join openquery([EAM],'select id,isaccountenabled,isaccountexpired,isaccountlocked,iscredentialsexpired,userid,name,username,password 
+   from fixedassets.admin ') b
+   on a.loginid=b.username 
+   where a.status<>5 and loginid is not null and loginid<>'' and b.username is null  --插入新的在职人员账号
+
+ end;
+
