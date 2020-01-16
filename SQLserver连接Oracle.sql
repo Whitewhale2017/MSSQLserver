@@ -11,6 +11,7 @@
 --      (SERVICE_NAME = orcl)
 --    )
  
+ ----ODBC中配置TNS service name
  
  
  --建立数据库链接服务器
@@ -33,3 +34,18 @@ exec sp_serveroption 'DW','rpc out','true'
 exec sp_serveroption 'DW','rpc','true' 
 --这两个是打开rpc,rpc out的，默认为False,打开后可以支持远程更改分布式事务。（如有分布式事务操作必须要设置）
 
+
+-----------------------不配置ODBC可如下配置---------------------
+
+EXEC master.dbo.sp_addlinkedserver 
+@server = N'PLM PRD', 
+@srvproduct=N'Oracle', 
+@provider=N'OraOLEDB.Oracle',
+ @datasrc=N'192.168.4.135:1521/orcl' --------数据源直接写地址
+ /* For security reasons the linked server remote logins password is changed with ######## */
+EXEC master.dbo.sp_addlinkedsrvlogin 
+@rmtsrvname=N'PLM PRD',
+@useself=N'False',
+@locallogin=NULL,
+@rmtuser=N'SSPLM',
+@rmtpassword='########'
