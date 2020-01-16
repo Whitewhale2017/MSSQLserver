@@ -5,9 +5,9 @@ sp_who2 --查询进程
 kill 63 --杀死进程
 
 use master  --取得独占访问权限
-ALTER DATABASE ecology SET OFFLINE WITH ROLLBACK IMMEDIATE
+ALTER DATABASE mchr SET OFFLINE WITH ROLLBACK IMMEDIATE
 go
-ALTER database ecology set online 
+ALTER database mchr set online 
 
 
 use master
@@ -39,7 +39,7 @@ use master
 --exec killspid '数据库名'
 exec killspid 'ecology'
 
-ALTER DATABASE ecology SET MULTI_USER --设置多用户模式
+ALTER DATABASE mchr SET MULTI_USER --设置多用户模式
 
 USE master
 EXEC sp_dboption 'ecology', 'single user', 'TRUE'
