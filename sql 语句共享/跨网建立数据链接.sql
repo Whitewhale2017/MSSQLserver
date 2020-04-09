@@ -1,6 +1,6 @@
-exec sp_addlinkedserver   'srv_lnk', '', 'SQLOLEDB','192.168.19.46'
+exec sp_addlinkedserver   'PRD-FR', '', 'SQLOLEDB','192.168.43.99,1488'
 --exec sp_addlinkedsrvlogin 'srv_lnk','false',null,'ÓÃ»§Ãû','ÃÜÂë'
-exec sp_addlinkedsrvlogin 'srv_lnk','false',null,'sa','ytx@12345'
+exec sp_addlinkedsrvlogin 'PRD-FR','false',null,'sa','Sansi123'
 
 
 exec sp_addlinkedserver   'srv_lnk', '', 'SQLOLEDB','192.168.150.245'
