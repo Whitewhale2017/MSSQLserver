@@ -22,7 +22,7 @@ SELECT * FROM OPENDATASOURCE('SQLOLEDB','Data Source=192.168.19.203;User ID=sa;P
 --SELECT *FROM OpenDataSource( 'Microsoft.Jet.OLEDB.4.0','Data Source="c:Financeaccount.xls";User ID=Admin;Password=;Extended properties=Excel 5.0')...xactions
 
 
-----创建链接服务器----
+----创建链接服务器-------------------------------
 --在跨库查询时需要启用Ad Hoc Distributed Queries---默认已开，不用执行以下语句
 --启用Ad Hoc Distributed Queries：
 exec sp_configure 'show advanced options',1
