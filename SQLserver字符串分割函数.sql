@@ -57,6 +57,9 @@ begin
   return substring(@str,@start,@location-@start)
 end
 
+--------------------测试-----------
+select dbo.Get_StrArrayStrOfIndex('asd,sd,as,a',',',1)
+
 ---结合上边两个函数，象数组一样遍历字符串中的元素---
 create function  f_splitstr(@SourceSql varchar(8000),@StrSeprate varchar(100))   
   returns   @temp   table(F1   varchar(100))   
@@ -74,3 +77,5 @@ create function  f_splitstr(@SourceSql varchar(8000),@StrSeprate varchar(100))
   end
 
 --drop function f_splitstr
+
+select * from dbo.f_splitstr('asd,sd,as,a',',')
