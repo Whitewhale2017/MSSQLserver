@@ -69,5 +69,6 @@ end;
 declare @str varchar(100)
 set @str='上海三思>第一营销中心>工程售后部>售后技术支持组';
 
-select dbo.substring_index(@str,'>',3) 
+select replace(dbo.substring_index(@str,'>',2),dbo.substring_index(@str,'>',1)+'>','')
+
 

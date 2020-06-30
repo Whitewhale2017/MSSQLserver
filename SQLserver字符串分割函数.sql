@@ -74,14 +74,3 @@ create function  f_splitstr(@SourceSql varchar(8000),@StrSeprate varchar(100))
   end
 
 --drop function f_splitstr
-
-create function Get_plus(@a float,@b float)
-returns float
-as
-begin
-    declare @result float
-	set @result=@a+@b
-	return @result
-end
-
-select dbo.Get_plus(12,13.6)
