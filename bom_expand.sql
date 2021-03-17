@@ -64,4 +64,4 @@ while @level<@endlevel
 end
 GO
 
-execute [dbo].[proc_bom_expand] '1190000026X002'
+execute [dbo].[proc_bom_expand] '1190000030X005'
